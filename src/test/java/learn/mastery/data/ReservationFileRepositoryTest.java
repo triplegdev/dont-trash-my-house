@@ -1,5 +1,6 @@
 package learn.mastery.data;
 
+import learn.mastery.models.Guest;
 import learn.mastery.models.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,10 @@ class ReservationFileRepositoryTest {
         reservation.setStartDate(TODAY);
         reservation.setEndDate(TODAY.plusDays(3));
         reservation.setTotal(new BigDecimal(600));
-        reservation.setGuestId(7);
+
+        Guest guest = new Guest();
+        guest.setId(7);
+        reservation.setGuest(guest);
 
         reservation = repository.add(reservation, HOST_ID);
 
@@ -74,7 +78,7 @@ class ReservationFileRepositoryTest {
         assertEquals(1, reservation.getId());
         assertEquals(LocalDate.parse("2020-07-01"), reservation.getStartDate());
         assertEquals(TODAY, reservation.getEndDate());
-        assertEquals(18, reservation.getGuestId());
+        assertEquals(18, reservation.getGuest().getId());
         assertEquals(new BigDecimal(870), reservation.getTotal());
     }
 
@@ -85,7 +89,10 @@ class ReservationFileRepositoryTest {
         reservation.setStartDate(TODAY);
         reservation.setEndDate(TODAY.plusDays(3));
         reservation.setTotal(new BigDecimal(600));
-        reservation.setGuestId(7);
+
+        Guest guest = new Guest();
+        guest.setId(7);
+        reservation.setGuest(guest);
 
         boolean result = repository.update(reservation, HOST_ID);
         assertFalse(result);

@@ -19,9 +19,9 @@ public class GuestRepositoryDouble implements GuestRepository {
     }
 
     @Override
-    public Guest findById(int id) {
+    public Guest findByEmail(String email) {
         return findAll().stream()
-                .filter(i -> i.getId() == id)
+                .filter(i -> i.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
     }

@@ -1,25 +1,39 @@
 package learn.mastery.domain;
 
 import learn.mastery.data.DataException;
+import learn.mastery.data.GuestRepository;
 import learn.mastery.data.ReservationRepository;
+import learn.mastery.models.Guest;
 import learn.mastery.models.Reservation;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
 
-    private final ReservationRepository repository;
+    private final ReservationRepository reservationRepository;
+    private final GuestRepository guestRepository;
 
-    public ReservationService(ReservationRepository repository) {
-        this.repository = repository;
+    public ReservationService(ReservationRepository reservationRepository, GuestRepository guestRepository) {
+        this.reservationRepository = reservationRepository;
+        this.guestRepository = guestRepository;
     }
 
     public List<Reservation> findByHost(String hostId) {
 
-        return repository.findByHost(hostId);
+        Map<String, Guest> guestMap = guestRepository.findAll().stream()
+                .collect(Collectors.toMap(i -> String.valueOf(i.getId()), i -> i));
+
+        List<Reservation> reservations = reservationRepository.findByHost(hostId);
+        for (Reservation reservation : reservations) {
+            reservation.setGuest(guestMap.get(String.valueOf(reservation.getGuest().getId())));
+        }
+
+        return reservations;
     }
 
     public Result<Reservation> add(Reservation reservation, String hostId) throws DataException {
@@ -33,12 +47,12 @@ public class ReservationService {
        for (Reservation r : reservations) {
            if (reservation.getStartDate().isBefore(r.getEndDate()) &&
                    reservation.getEndDate().isAfter(r.getStartDate())) {
-               result.addErrorMessage("Dates cannot overlap an existing reservation.");
+               result.addErrorMessage("Dates conflict with an existing reservation.");
                return result;
            }
        }
 
-       result.setPayload(repository.add(reservation, hostId));
+       result.setPayload(reservationRepository.add(reservation, hostId));
 
         if (result.isSuccess()) {
             String successMessage = String.format("Reservation %s added.", result.getPayload().getId());
@@ -54,7 +68,7 @@ public class ReservationService {
             return result;
         }
 
-        boolean updated = repository.update(reservation, hostId);
+        boolean updated = reservationRepository.update(reservation, hostId);
         if (!updated) {
             result.addErrorMessage(String.format("Reservation with id: %s does not exist", reservation.getId()));
             return result;
@@ -62,10 +76,12 @@ public class ReservationService {
 
         List<Reservation> reservations = findByHost(hostId);
         for (Reservation r : reservations) {
-            if (reservation.getStartDate().isBefore(r.getEndDate()) &&
-                    reservation.getEndDate().isAfter(r.getStartDate())) {
-                result.addErrorMessage("Dates cannot overlap an existing reservation.");
-                return result;
+            if (r.getId() != reservation.getId()) { // Check if it's the same reservation
+                if (reservation.getStartDate().isBefore(r.getEndDate()) &&
+                        reservation.getEndDate().isAfter(r.getStartDate())) {
+                    result.addErrorMessage("Dates conflict with an existing reservation.");
+                    return result;
+                }
             }
         }
 
@@ -78,7 +94,7 @@ public class ReservationService {
 
     public Result<Reservation> deleteById(int reservationId, String hostId) throws DataException {
         Result<Reservation> result = new Result<>();
-        if (!repository.deleteById(reservationId, hostId)) {
+        if (!reservationRepository.deleteById(reservationId, hostId)) {
             result.addErrorMessage(String.format("Reservation with id: %s does not exist", reservationId));
         }
         if (result.isSuccess()) {
@@ -106,15 +122,13 @@ public class ReservationService {
             result.addErrorMessage("End date is required.");
         }
 
-        return result;
-
 //        if (!result.isSuccess()) {
 //            return result;
 //        }
-
+//
 //        validateStartDate(reservation, result);
 
-//        return result;
+        return result;
     }
 
 //    private Result<Reservation> validateNulls(Reservation reservation) {
@@ -138,8 +152,8 @@ public class ReservationService {
 //    }
 
 //    private void validateStartDate(Reservation reservation, Result<Reservation> result) {
-//        if (reservation.getStartDate().isBefore(LocalDate.now())) {
-//            result.addErrorMessage("Start date cannot be in the past.");
+//        if (reservation.getStartDate().isAfter(reservation.getEndDate())) {
+//            result.addErrorMessage("Start date must be before end date.");
 //        }
 //    }
 

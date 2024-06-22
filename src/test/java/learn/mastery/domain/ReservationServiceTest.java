@@ -1,7 +1,9 @@
 package learn.mastery.domain;
 
 import learn.mastery.data.DataException;
+import learn.mastery.data.GuestRepositoryDouble;
 import learn.mastery.data.ReservationRepositoryDouble;
+import learn.mastery.models.Guest;
 import learn.mastery.models.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class ReservationServiceTest {
     @BeforeEach
     void setup() {
         ReservationRepositoryDouble repository = new ReservationRepositoryDouble();
-        service = new ReservationService(repository);
+        service = new ReservationService(repository, new GuestRepositoryDouble());
     }
 
     @Test
@@ -37,7 +39,11 @@ class ReservationServiceTest {
         reservation.setId(3);
         reservation.setStartDate(TODAY.plusDays(4));
         reservation.setEndDate(TODAY.plusDays(6));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = new Result<>();
@@ -61,7 +67,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(null);
         reservation.setEndDate(TODAY.plusDays(3));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("Start date is required.");
@@ -76,7 +86,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(TODAY);
         reservation.setEndDate(null);
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("End date is required.");
@@ -92,7 +106,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(TODAY.plusDays(8));
         reservation.setEndDate(TODAY.plusDays(12));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
@@ -107,7 +125,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(TODAY);
         reservation.setEndDate(TODAY.plusDays(8));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
@@ -122,7 +144,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(TODAY.plusDays(8));
         reservation.setEndDate(TODAY.plusDays(9));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
@@ -137,7 +163,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(TODAY.plusDays(6));
         reservation.setEndDate(TODAY.plusDays(12));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
@@ -152,7 +182,11 @@ class ReservationServiceTest {
         reservation.setId(2);
         reservation.setStartDate(TODAY.plusDays(7));
         reservation.setEndDate(TODAY.plusDays(10));
-        reservation.setGuestId(14);
+
+        Guest guest = new Guest();
+        guest.setId(14);
+        reservation.setGuest(guest);
+
         reservation.setTotal(new BigDecimal(750));
 
         Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");

@@ -26,8 +26,8 @@ class GuestServiceTest {
     }
 
     @Test
-    void shouldFindById() {
-        Guest guest = service.findById(1);
+    void shouldFindByEmail() {
+        Guest guest = service.findByEmail("tony@starkindustries.com");
         assertEquals("Tony", guest.getFirstName());
         assertEquals("Stark", guest.getLastName());
         assertEquals("tony@starkindustries.com", guest.getEmail());
@@ -36,8 +36,8 @@ class GuestServiceTest {
     }
 
     @Test
-    void shouldNotFindById() {
-        Guest guest = service.findById(9999);
+    void shouldNotFindByEmail() {
+        Guest guest = service.findByEmail("fake@email.com");
         assertNull(guest);
     }
 

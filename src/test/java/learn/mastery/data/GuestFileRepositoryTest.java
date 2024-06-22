@@ -37,8 +37,8 @@ class GuestFileRepositoryTest {
     }
 
     @Test
-    void shouldFindById() {
-        Guest guest = repository.findById(1);
+    void shouldFindByEmail() {
+        Guest guest = repository.findByEmail("slomas0@mediafire.com");
         assertEquals("Sullivan", guest.getFirstName());
         assertEquals("Lomas", guest.getLastName());
         assertEquals("slomas0@mediafire.com", guest.getEmail());
@@ -47,8 +47,8 @@ class GuestFileRepositoryTest {
     }
 
     @Test
-    void shouldNotFindById() {
-        Guest guest = repository.findById(9999);
+    void shouldNotFindByEmail() {
+        Guest guest = repository.findByEmail("fake@email.com");
         assertNull(guest);
     }
 

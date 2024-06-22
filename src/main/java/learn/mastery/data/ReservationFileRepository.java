@@ -1,5 +1,6 @@
 package learn.mastery.data;
 
+import learn.mastery.models.Guest;
 import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,7 @@ public class ReservationFileRepository implements ReservationRepository {
         }
         return result;
     }
+
 
     @Override
     public Reservation add(Reservation reservation, String hostId) throws DataException {
@@ -111,7 +113,7 @@ public class ReservationFileRepository implements ReservationRepository {
                 reservation.getId(),
                 reservation.getStartDate(),
                 reservation.getEndDate(),
-                reservation.getGuestId(),
+                reservation.getGuest().getId(),
                 reservation.getTotal());
     }
 
@@ -120,8 +122,11 @@ public class ReservationFileRepository implements ReservationRepository {
         result.setId(Integer.parseInt(fields[0]));
         result.setStartDate(LocalDate.parse(fields[1]));
         result.setEndDate(LocalDate.parse(fields[2]));
-        result.setGuestId(Integer.parseInt(fields[3]));
         result.setTotal(new BigDecimal(fields[4]));
+
+        Guest guest = new Guest();
+        guest.setId(Integer.parseInt(fields[3]));
+        result.setGuest(guest);
 
         return result;
     }

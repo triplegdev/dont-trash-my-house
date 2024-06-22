@@ -1,7 +1,9 @@
 package learn.mastery.models;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Reservation {
@@ -9,8 +11,7 @@ public class Reservation {
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal total;
-    private int guestId;
-//    private Host host;
+    private Guest guest;
 
 
     public int getId() {
@@ -45,33 +46,28 @@ public class Reservation {
         this.total = total;
     }
 
-    public int getGuestId() {
-        return guestId;
+    public Guest getGuest() {
+        return guest;
     }
 
-    public void setGuestId(int guestId) {
-        this.guestId = guestId;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
-//    public Host getHost() {
-//        return host;
-//    }
-//
-//    public void setHost(Host host) {
-//        this.host = host;
-//    }
+    public BigDecimal calculateTotal(BigDecimal standardRate, BigDecimal weekendRate) {
+        BigDecimal totalCost = BigDecimal.ZERO;
 
+        // Iterate through each day between startDate and endDate
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            DayOfWeek dayOfWeek = date.getDayOfWeek();
+            if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+                totalCost = totalCost.add(weekendRate);
+            } else {
+                totalCost = totalCost.add(standardRate);
+            }
+        }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Reservation that = (Reservation) o;
-//        return id == that.id && guestId == that.guestId && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(total, that.total);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, startDate, endDate, total, guestId);
-//    }
+        return totalCost;
+    }
+
 }

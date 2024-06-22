@@ -18,7 +18,7 @@ public class GuestFileRepository implements GuestRepository {
     private static final String HEADER = "guest_id,first_name,last_name,email,phone,state";
     private final String filePath;
 
-    public GuestFileRepository(@Value("${guestFilePath}") String filePath) {
+    public GuestFileRepository(@Value("${guestsFilePath}") String filePath) {
         this.filePath = filePath;
     }
 
@@ -43,12 +43,20 @@ public class GuestFileRepository implements GuestRepository {
     }
 
     @Override
-    public Guest findById(int id) {
+    public Guest findByEmail(String email) {
         return findAll().stream()
-                .filter(i -> i.getId() == id)
+                .filter(i -> i.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
     }
+
+//    @Override
+//    public Guest findById(int id) {
+//        return findAll().stream()
+//                .filter(i -> i.getId() == id)
+//                .findFirst()
+//                .orElse(null);
+//    }
 
 //    private String serialize(Guest guest) {
 //        return String.format("%s,%s,%s,%s,%s,%s",

@@ -20,9 +20,11 @@ public class HostFileRepository implements HostRepository {
     private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
     private final String filePath;
 
-    public HostFileRepository(@Value("${hostFilePath}") String filePath) {
+    public HostFileRepository(@Value("${hostsFilePath}") String filePath) {
         this.filePath = filePath;
-    } @Override
+    }
+
+    @Override
     public List<Host> findAll() {
         ArrayList<Host> result = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -50,23 +52,20 @@ public class HostFileRepository implements HostRepository {
                 .orElse(null);
     }
 
-
-
-
-    private String serialize(Host host) {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
-                host.getId(),
-                host.getLastName(),
-                host.getPhone(),
-                host.getEmail(),
-                host.getAddress(),
-                host.getCity(),
-                host.getState(),
-                host.getPostalCode(),
-                host.getStandardRate(),
-                host.getWeekendRate());
-
-    }
+//    private String serialize(Host host) {
+//        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+//                host.getId(),
+//                host.getLastName(),
+//                host.getPhone(),
+//                host.getEmail(),
+//                host.getAddress(),
+//                host.getCity(),
+//                host.getState(),
+//                host.getPostalCode(),
+//                host.getStandardRate(),
+//                host.getWeekendRate());
+//
+//    }
 
     private Host deserialize(String[] fields) {
         Host result = new Host();

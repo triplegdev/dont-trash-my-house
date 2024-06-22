@@ -52,7 +52,7 @@ class HostFileRepositoryTest {
     }
 
     @Test
-    void shouldNotFindByEmail() {
+    void shouldNotFindByEmail() throws DataException {
         Host host = repository.findByEmail("fakeemail0@aol.com");
         assertNull(host);
     }

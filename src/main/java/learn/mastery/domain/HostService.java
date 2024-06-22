@@ -1,5 +1,6 @@
 package learn.mastery.domain;
 
+import learn.mastery.data.DataException;
 import learn.mastery.data.HostRepository;
 import learn.mastery.models.Host;
 import org.springframework.stereotype.Service;

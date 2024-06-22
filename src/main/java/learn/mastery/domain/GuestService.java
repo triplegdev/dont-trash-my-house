@@ -19,7 +19,7 @@ public class GuestService {
         return repository.findAll();
     }
 
-    public Guest findById(int id) {
-        return repository.findById(id);
+    public Guest findByEmail(String email) {
+        return repository.findByEmail(email);
     }
 }

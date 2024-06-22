@@ -1,5 +1,6 @@
 package learn.mastery.domain;
 
+import learn.mastery.data.DataException;
 import learn.mastery.data.HostRepositoryDouble;
 import learn.mastery.models.Host;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ class HostServiceTest {
     }
 
     @Test
-    void shouldNotFindByEmail() {
+    void shouldNotFindByEmail() throws DataException {
         Host host = service.findByEmail("fakeemail0@aol.com");
         assertNull(host);
     }
