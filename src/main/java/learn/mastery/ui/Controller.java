@@ -54,7 +54,7 @@ public class Controller {
                     updateReservation();
                     break;
                 case DELETE_RESERVATION:
-                    System.out.println("delete reservation");
+                    deleteReservation();
                     break;
             }
         } while (option != MainMenuOption.EXIT);
@@ -153,5 +153,41 @@ public class Controller {
             }
         }
 
+    }
+
+    public void deleteReservation() throws DataException {
+        view.displayHeader(MainMenuOption.UPDATE_RESERVATION.getMessage());
+
+        String hostEmail = view.getHostEmail();
+        Host host = hostService.findByEmail(hostEmail);
+        if (host == null) {
+            view.displayHostError();
+            return;
+        }
+
+        String guestEmail = view.getGuestEmail();
+        Guest guest = guestService.findByEmail(guestEmail);
+        if (guest == null) {
+            view.displayGuestError();
+            return;
+        }
+
+        List<Reservation> reservations = reservationService.findByHost(host.getId());
+
+        view.displayFutureGuestReservations(reservations, host, guest.getId());
+
+        Reservation reservation = view.chooseReservation(reservations);
+
+        String confirmation = view.confirmDelete();
+
+        if (confirmation.equalsIgnoreCase("y")) {
+            Result<Reservation> result = reservationService.deleteById(reservation.getId(), host.getId());
+            if (!result.isSuccess()) {
+                view.displayStatus(false, result.getErrorMessages());
+            } else {
+                String successMessage = String.format("Reservation %s deleted.", reservation.getId());
+                view.displayStatus(true, successMessage);
+            }
+        }
     }
 }

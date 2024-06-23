@@ -162,6 +162,11 @@ public class View {
         io.readString("Press [Enter] to continue.");
     }
 
+    public String confirmDelete() {
+        displayHeader("Cancel Reservation");
+        return io.readRequiredString("Are you sure? [y/n]: ");
+    }
+
     public void displayHeader(String message) {
         io.println("");
         io.println(message);
@@ -217,6 +222,14 @@ public class View {
     public void displayGuestReservations(List<Reservation> reservations, Host host, int guestId) {
         List<Reservation> guestReservations = reservations.stream()
                 .filter(r -> r.getGuest().getId() == guestId)
+                .toList();
+
+        displayReservations(guestReservations, host);
+    }
+
+    public void displayFutureGuestReservations(List<Reservation> reservations, Host host, int guestId) {
+        List<Reservation> guestReservations = reservations.stream()
+                .filter(r -> r.getGuest().getId() == guestId && r.getStartDate().isAfter(LocalDate.now()))
                 .toList();
 
         displayReservations(guestReservations, host);
