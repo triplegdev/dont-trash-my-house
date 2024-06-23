@@ -10,6 +10,7 @@ import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Controller {
                     addReservation();
                     break;
                 case UPDATE_RESERVATION:
-                    System.out.println("update reservation");
+                    updateReservation();
                     break;
                 case DELETE_RESERVATION:
                     System.out.println("delete reservation");
@@ -109,6 +110,45 @@ public class Controller {
                 view.displayStatus(false, result.getErrorMessages());
             } else {
                 String successMessage = String.format("Reservation %s created.", result.getPayload().getId());
+                view.displayStatus(true, successMessage);
+            }
+        }
+
+    }
+
+    private void updateReservation() throws DataException {
+        view.displayHeader(MainMenuOption.UPDATE_RESERVATION.getMessage());
+
+        String hostEmail = view.getHostEmail();
+        Host host = hostService.findByEmail(hostEmail);
+        if (host == null) {
+            view.displayHostError();
+            return;
+        }
+
+        String guestEmail = view.getGuestEmail();
+        Guest guest = guestService.findByEmail(guestEmail);
+        if (guest == null) {
+            view.displayGuestError();
+            return;
+        }
+
+        List<Reservation> reservations = reservationService.findByHost(host.getId());
+
+        view.displayGuestReservations(reservations, host, guest.getId());
+
+        Reservation reservation = view.chooseReservation(reservations);
+
+        Reservation updated = view.update(reservation);
+
+        String confirmation = view.makeSummary(updated);
+
+        if (confirmation.equalsIgnoreCase("y")) {
+            Result<Reservation> result = reservationService.update(reservation, host.getId());
+            if (!result.isSuccess()) {
+                view.displayStatus(false, result.getErrorMessages());
+            } else {
+                String successMessage = String.format("Reservation %s updated.", result.getPayload().getId());
                 view.displayStatus(true, successMessage);
             }
         }

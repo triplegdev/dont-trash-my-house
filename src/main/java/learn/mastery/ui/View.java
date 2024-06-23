@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,6 +49,66 @@ public class View {
 //
 //        return false;
 //    }
+
+    public Reservation chooseReservation(List<Reservation> reservations) {
+        Reservation reservation;
+        do {
+            int reservationId = io.readInt("Reservation ID: ");
+
+             reservation = reservations.stream()
+                    .filter(r -> r.getId() == reservationId)
+                    .findFirst()
+                    .orElse(null);
+            if (reservation == null) {
+                displayStatus(false, "Reservation " + reservationId + " not found.");
+            }
+            System.out.println();
+        } while (reservation == null);
+
+        return reservation;
+
+    }
+
+    public Reservation update(Reservation reservation) {
+        reservation.setStartDate(Optional.ofNullable(readUpdatedStartDate("Start (MM/dd/yyyy): "))
+                                         .orElse(reservation.getStartDate()));
+        reservation.setEndDate(Optional.ofNullable(readUpdatedEndDate("End (MM/dd/yyyy): ", reservation.getStartDate()))
+                                       .orElse(reservation.getEndDate()));
+
+        return reservation;
+    }
+
+    public LocalDate readUpdatedStartDate(String prompt) {
+        LocalDate startDate;
+        do {
+            startDate = io.readDate(prompt);
+            if (startDate == null) {
+                return startDate;
+            }
+            if (startDate.isBefore(LocalDate.now())) {
+                displayStatus(false, "Start date must not be in the past.");
+                System.out.println();
+            }
+        } while (startDate.isBefore(LocalDate.now()));
+
+        return startDate;
+    }
+
+    public LocalDate readUpdatedEndDate(String prompt, LocalDate startDate) {
+        LocalDate endDate;
+        do {
+            endDate = io.readDate(prompt);
+            if (endDate == null) {
+                return endDate;
+            }
+            if (endDate.isBefore(startDate)) {
+                displayStatus(false, "End date must come after start date.");
+                System.out.println();
+            }
+        } while (endDate.isBefore(startDate));
+
+        return endDate;
+    }
 
     public LocalDate readStartDate(String prompt) {
         LocalDate startDate;
