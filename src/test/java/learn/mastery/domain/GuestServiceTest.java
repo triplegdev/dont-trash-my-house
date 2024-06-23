@@ -22,7 +22,7 @@ class GuestServiceTest {
     @Test
     void shouldFindAll() {
         List<Guest> guests = service.findAll();
-        assertEquals(1, guests.size());
+        assertEquals(2, guests.size());
     }
 
     @Test

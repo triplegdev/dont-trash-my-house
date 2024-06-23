@@ -40,7 +40,7 @@ public class ReservationRepositoryDouble implements ReservationRepository {
 
         Guest guest2 = new Guest();
         guest2.setId(18);
-        reservation.setGuest(guest2);
+        reservation2.setGuest(guest2);
 
         reservation2.setTotal(new BigDecimal(600));
         reservations.add(reservation2);

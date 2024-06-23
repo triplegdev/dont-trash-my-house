@@ -113,7 +113,7 @@ class ReservationServiceTest {
 
         reservation.setTotal(new BigDecimal(750));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.add(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -132,7 +132,7 @@ class ReservationServiceTest {
 
         reservation.setTotal(new BigDecimal(750));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.add(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -151,7 +151,7 @@ class ReservationServiceTest {
 
         reservation.setTotal(new BigDecimal(750));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.add(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -170,7 +170,7 @@ class ReservationServiceTest {
 
         reservation.setTotal(new BigDecimal(750));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.add(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -189,7 +189,7 @@ class ReservationServiceTest {
 
         reservation.setTotal(new BigDecimal(750));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.add(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -242,7 +242,7 @@ class ReservationServiceTest {
         Reservation reservation = service.findByHost(HOST_ID).get(0);
         reservation.setStartDate(TODAY.plusDays(1));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.update(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -253,7 +253,7 @@ class ReservationServiceTest {
         Reservation reservation = service.findByHost(HOST_ID).get(1);
         reservation.setEndDate(TODAY.plusDays(8));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.update(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -265,7 +265,7 @@ class ReservationServiceTest {
         reservation.setStartDate(TODAY.plusDays(1));
         reservation.setEndDate(TODAY.plusDays(2));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.update(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -277,7 +277,7 @@ class ReservationServiceTest {
         reservation.setStartDate(TODAY.plusDays(6));
         reservation.setEndDate(TODAY.plusDays(12));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.update(reservation, HOST_ID);
         assertEquals(expected, actual);
 
@@ -289,7 +289,7 @@ class ReservationServiceTest {
         reservation.setStartDate(TODAY);
         reservation.setEndDate(TODAY.plusDays(3));
 
-        Result<Reservation> expected = makeResult("Dates cannot overlap an existing reservation.");
+        Result<Reservation> expected = makeResult("Dates conflict with an existing reservation.");
         Result<Reservation> actual = service.update(reservation, HOST_ID);
         assertEquals(expected, actual);
 
