@@ -71,8 +71,9 @@ public class Controller {
         }
 
         List<Reservation> reservations = reservationService.findByHost(host.getId());
+        List<Reservation> sortedByDate = reservationService.sortByDate(reservations);
 
-        view.displayReservations(reservations, host);
+        view.displayReservations(sortedByDate, host);
         view.enterToContinue();
     }
 
@@ -94,8 +95,8 @@ public class Controller {
         }
 
         List<Reservation> reservations = reservationService.findByHost(host.getId());
-        view.displayReservations(reservations, host);
-//        view.displayGuestReservations(reservations, host, guest.getId());
+        List<Reservation> sortedByDate = reservationService.sortByDate(reservations);
+        view.displayReservations(sortedByDate, host);
 
         Reservation reservation = view.makeReservation(guest, host);
 //        if (view.checkDates(reservations, reservation)) {
@@ -134,12 +135,19 @@ public class Controller {
         }
 
         List<Reservation> reservations = reservationService.findByHost(host.getId());
+        List<Reservation> guestReservations = reservationService.getGuestReservations(reservations, guest.getId());
 
-        view.displayGuestReservations(reservations, host, guest.getId());
+        List<Reservation> sortedByDate = reservationService.sortByDate(guestReservations);
+
+        view.displayReservations(sortedByDate, host);
+
+        if (guestReservations.isEmpty()) {
+            return;
+        }
 
         Reservation reservation = view.chooseReservation(reservations);
 
-        Reservation updated = view.update(reservation);
+        Reservation updated = view.update(reservation, host);
 
         String confirmation = view.makeSummary(updated);
 
@@ -156,7 +164,7 @@ public class Controller {
     }
 
     public void deleteReservation() throws DataException {
-        view.displayHeader(MainMenuOption.UPDATE_RESERVATION.getMessage());
+        view.displayHeader(MainMenuOption.DELETE_RESERVATION.getMessage());
 
         String hostEmail = view.getHostEmail();
         Host host = hostService.findByEmail(hostEmail);
@@ -173,8 +181,15 @@ public class Controller {
         }
 
         List<Reservation> reservations = reservationService.findByHost(host.getId());
+        List<Reservation> futureGuestReservations = reservationService.getFutureGuestReservations(reservations, guest.getId());
 
-        view.displayFutureGuestReservations(reservations, host, guest.getId());
+        List<Reservation> sortedByDate = reservationService.sortByDate(futureGuestReservations);
+
+        view.displayReservations(sortedByDate, host);
+
+        if (futureGuestReservations.isEmpty()) {
+            return;
+        }
 
         Reservation reservation = view.chooseReservation(reservations);
 

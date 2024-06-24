@@ -2,7 +2,6 @@ package learn.mastery.ui;
 
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -50,26 +49,6 @@ public class ConsoleIO {
         }
     }
 
-    public double readDouble(String prompt) {
-        while (true) {
-            try {
-                return Double.parseDouble(readRequiredString(prompt));
-            } catch (NumberFormatException ex) {
-                println(INVALID_NUMBER);
-            }
-        }
-    }
-
-    public double readDouble(String prompt, double min, double max) {
-        while (true) {
-            double result = readDouble(prompt);
-            if (result >= min && result <= max) {
-                return result;
-            }
-            println(String.format(NUMBER_OUT_OF_RANGE, min, max));
-        }
-    }
-
     public int readInt(String prompt) {
         while (true) {
             try {
@@ -87,18 +66,6 @@ public class ConsoleIO {
                 return result;
             }
             println(String.format(NUMBER_OUT_OF_RANGE, min, max));
-        }
-    }
-
-    public boolean readBoolean(String prompt) {
-        while (true) {
-            String input = readRequiredString(prompt).toLowerCase();
-            if (input.equals("y")) {
-                return true;
-            } else if (input.equals("n")) {
-                return false;
-            }
-            println("[INVALID] Please enter 'y' or 'n'.");
         }
     }
 
@@ -127,27 +94,6 @@ public class ConsoleIO {
         } while (input == null || !input.isEmpty());
 
         return null;
-    }
-
-    public BigDecimal readBigDecimal(String prompt) {
-        while (true) {
-            String input = readRequiredString(prompt);
-            try {
-                return new BigDecimal(input);
-            } catch (NumberFormatException ex) {
-                println(INVALID_NUMBER);
-            }
-        }
-    }
-
-    public BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max) {
-        while (true) {
-            BigDecimal result = readBigDecimal(prompt);
-            if (result.compareTo(min) >= 0 && result.compareTo(max) <= 0) {
-                return result;
-            }
-            println(String.format(NUMBER_OUT_OF_RANGE, min, max));
-        }
     }
 
 }

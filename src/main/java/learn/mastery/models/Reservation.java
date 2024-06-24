@@ -58,9 +58,9 @@ public class Reservation {
         BigDecimal totalCost = BigDecimal.ZERO;
 
         // Iterate through each day between startDate and endDate
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+        for (LocalDate date = startDate; !date.isAfter(endDate.plusDays(-1)); date = date.plusDays(1)) {
             DayOfWeek dayOfWeek = date.getDayOfWeek();
-            if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            if (dayOfWeek == DayOfWeek.FRIDAY || dayOfWeek == DayOfWeek.SATURDAY) {
                 totalCost = totalCost.add(weekendRate);
             } else {
                 totalCost = totalCost.add(standardRate);

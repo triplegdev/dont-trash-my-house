@@ -8,6 +8,7 @@ import learn.mastery.models.Reservation;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,12 +69,6 @@ public class ReservationService {
             return result;
         }
 
-        boolean updated = reservationRepository.update(reservation, hostId);
-        if (!updated) {
-            result.addErrorMessage(String.format("Reservation with id: %s does not exist", reservation.getId()));
-            return result;
-        }
-
         List<Reservation> reservations = findByHost(hostId);
         for (Reservation r : reservations) {
             if (r.getId() != reservation.getId()) { // Check if it's the same reservation
@@ -83,6 +78,12 @@ public class ReservationService {
                     return result;
                 }
             }
+        }
+
+        boolean updated = reservationRepository.update(reservation, hostId);
+        if (!updated) {
+            result.addErrorMessage(String.format("Reservation with id: %s does not exist", reservation.getId()));
+            return result;
         }
 
         result.setPayload(reservation);
@@ -122,40 +123,28 @@ public class ReservationService {
             result.addErrorMessage("End date is required.");
         }
 
-//        if (!result.isSuccess()) {
-//            return result;
-//        }
-//
-//        validateStartDate(reservation, result);
 
         return result;
     }
 
-//    private Result<Reservation> validateNulls(Reservation reservation) {
-//
-//        Result<Reservation> result = new Result<>();
-//
-//        if (reservation == null) {
-//            result.addErrorMessage("Nothing to save.");
-//            return result;
-//        }
-//
-//        if (reservation.getStartDate() == null) {
-//            result.addErrorMessage("Start date is required.");
-//        }
-//
-//        if (reservation.getEndDate() == null) {
-//            result.addErrorMessage("End date is required.");
-//        }
-//
-//        return result;
-//    }
+    public List<Reservation> sortByDate(List<Reservation> reservations) {
+        return reservations.stream()
+                .sorted(Comparator.comparing(Reservation::getStartDate))
+                .toList();
+    }
 
-//    private void validateStartDate(Reservation reservation, Result<Reservation> result) {
-//        if (reservation.getStartDate().isAfter(reservation.getEndDate())) {
-//            result.addErrorMessage("Start date must be before end date.");
-//        }
-//    }
+    public List<Reservation> getGuestReservations(List<Reservation> reservations, int guestId) {
+        return reservations.stream()
+                .filter(r -> r.getGuest().getId() == guestId)
+                .toList();
+    }
+
+    public List<Reservation> getFutureGuestReservations(List<Reservation> reservations, int guestId) {
+        return reservations.stream()
+                .filter(r -> r.getGuest().getId() == guestId && r.getStartDate().isAfter(LocalDate.now()))
+                .toList();
+    }
+
 
 
 }

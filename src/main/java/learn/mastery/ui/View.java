@@ -5,6 +5,7 @@ import learn.mastery.models.Host;
 import learn.mastery.models.Reservation;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -69,11 +70,14 @@ public class View {
 
     }
 
-    public Reservation update(Reservation reservation) {
+    public Reservation update(Reservation reservation, Host host) {
         reservation.setStartDate(Optional.ofNullable(readUpdatedStartDate("Start (MM/dd/yyyy): "))
                                          .orElse(reservation.getStartDate()));
         reservation.setEndDate(Optional.ofNullable(readUpdatedEndDate("End (MM/dd/yyyy): ", reservation.getStartDate()))
                                        .orElse(reservation.getEndDate()));
+
+        BigDecimal newTotal = reservation.calculateTotal(host.getStandardRate(), host.getWeekendRate());
+        reservation.setTotal(newTotal);
 
         return reservation;
     }
@@ -163,7 +167,7 @@ public class View {
     }
 
     public String confirmDelete() {
-        displayHeader("Cancel Reservation");
+        displayHeader("Confirm Cancellation");
         return io.readRequiredString("Are you sure? [y/n]: ");
     }
 
@@ -201,7 +205,7 @@ public class View {
 
     public void displayReservations(List<Reservation> reservations, Host host) {
         if (reservations.isEmpty()) {
-            io.println("No reservations were found for that host.");
+            io.println("No reservations were found.");
             return;
         }
 
@@ -217,22 +221,6 @@ public class View {
                     reservation.getGuest().getEmail()
             );
         }
-    }
-
-    public void displayGuestReservations(List<Reservation> reservations, Host host, int guestId) {
-        List<Reservation> guestReservations = reservations.stream()
-                .filter(r -> r.getGuest().getId() == guestId)
-                .toList();
-
-        displayReservations(guestReservations, host);
-    }
-
-    public void displayFutureGuestReservations(List<Reservation> reservations, Host host, int guestId) {
-        List<Reservation> guestReservations = reservations.stream()
-                .filter(r -> r.getGuest().getId() == guestId && r.getStartDate().isAfter(LocalDate.now()))
-                .toList();
-
-        displayReservations(guestReservations, host);
     }
 
 

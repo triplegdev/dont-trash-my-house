@@ -15,7 +15,6 @@ public class Host {
     private String postalCode;
     private BigDecimal standardRate;
     private BigDecimal weekendRate;
-    private List<Reservation> reservations;
 
     public String getId() {
         return id;
@@ -95,13 +94,5 @@ public class Host {
 
     public void setWeekendRate(BigDecimal weekendRate) {
         this.weekendRate = weekendRate;
-    }
-
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List<Reservation> reservations) {
-        this.reservations = reservations;
     }
 }
