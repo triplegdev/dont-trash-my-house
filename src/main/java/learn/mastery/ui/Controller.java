@@ -145,7 +145,7 @@ public class Controller {
             return;
         }
 
-        Reservation reservation = view.chooseReservation(reservations);
+        Reservation reservation = view.chooseReservation(guestReservations);
 
         Reservation updated = view.update(reservation, host);
 
@@ -191,7 +191,7 @@ public class Controller {
             return;
         }
 
-        Reservation reservation = view.chooseReservation(reservations);
+        Reservation reservation = view.chooseReservation(futureGuestReservations);
 
         String confirmation = view.confirmDelete();
 
